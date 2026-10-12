@@ -171,7 +171,7 @@
       </div>
     </section>
   </main>
-  <p class="sr-only" role="status" aria-live="polite"></p>
+  <p id="intro-status" class="sr-only" role="status" aria-live="polite"></p>
   <noscript><style>.intro { display: none; } .invitation { opacity: 1; filter: none; transform: none; }</style></noscript>
   <script>
     (() => {
@@ -183,7 +183,7 @@
       const openButton = document.querySelector('.open-invitation');
       const playButton = document.querySelector('.play-video');
       const notice = document.querySelector('.notice');
-      const status = document.querySelector('[role="status"]');
+      const status = document.querySelector('#intro-status');
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
       let opening = false;
       let playAttempt = 0;
