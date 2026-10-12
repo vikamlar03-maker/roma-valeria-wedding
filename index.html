@@ -63,11 +63,11 @@
       color: #382016; text-align: center; font: 14px/1.4 Georgia, serif;
     }
     .invitation {
-      min-height: 100svh; display: grid; place-items: center;
+      min-height: 100svh; width: 100%; display: block;
       opacity: 0; filter: blur(18px); transform: scale(1.025);
       transition: opacity 1400ms ease, filter 1400ms ease, transform 1400ms ease;
     }
-    .first-photo { display: block; width: min(100vw, 56.25svh); height: auto; }
+    .invitation-photo { display: block; width: 100%; height: auto; margin: 0; border: 0; }
     body[data-state="opening"] .intro { opacity: 0; filter: blur(22px); transform: scale(1.035); pointer-events: none; }
     body[data-state="opening"] .invitation, body[data-state="opened"] .invitation {
       opacity: 1; filter: blur(0); transform: scale(1);
@@ -95,7 +95,8 @@
     </div>
   </section>
   <main class="invitation" aria-label="Приглашение Ромы и Валерии" aria-hidden="true" inert>
-    <img class="first-photo" src="Foto1.PNG" alt="Свадебное приглашение Ромы и Валерии: фотографии пары, 31 октября 2026 года." decoding="async" fetchpriority="high" tabindex="-1">
+    <img class="invitation-photo first-photo" src="Foto1.PNG" width="1080" height="1920" alt="Свадебное приглашение Ромы и Валерии: фотографии пары, 31 октября 2026 года." decoding="async" fetchpriority="high" tabindex="-1">
+    <img class="invitation-photo second-photo" src="Foto2.PNG" width="1080" height="1920" alt="Дорогие гости! Приглашаем вас на свадьбу 31 октября 2026 года. Место проведения: Weserstraße 170, Bremerhaven 27572." decoding="async" loading="lazy">
   </main>
   <p class="sr-only" role="status" aria-live="polite"></p>
   <noscript><style>.intro { display: none; } .invitation { opacity: 1; filter: none; transform: none; }</style></noscript>
