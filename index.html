@@ -68,6 +68,19 @@
       transition: opacity 1400ms ease, filter 1400ms ease, transform 1400ms ease;
     }
     .invitation-photo { display: block; width: 100%; height: auto; margin: 0; border: 0; }
+    .map-section { position: relative; width: 100%; margin: 0; container-type: inline-size; }
+    .map-link {
+      /* The existing brown rectangle in Foto3.jpeg: x=137..727, y=415..544. */
+      position: absolute; left: 15.86%; top: 27.02%; width: 68.29%; height: 8.40%;
+      min-height: 44px; display: flex; align-items: center; justify-content: center;
+      border-radius: 5cqw; color: #fff7ec; text-decoration: none;
+      font-family: Invitation, Georgia, serif; font-style: italic; font-weight: 500;
+      font-size: clamp(16px, 4.5cqw, 64px); line-height: 1; white-space: nowrap;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+      transition: background 200ms ease;
+    }
+    .map-link:hover { background: rgba(255, 247, 236, .08); }
+    .map-link:focus-visible { outline: 2px solid #fff7ec; outline-offset: -5px; }
     body[data-state="opening"] .intro { opacity: 0; filter: blur(22px); transform: scale(1.035); pointer-events: none; }
     body[data-state="opening"] .invitation, body[data-state="opened"] .invitation {
       opacity: 1; filter: blur(0); transform: scale(1);
@@ -97,6 +110,10 @@
   <main class="invitation" aria-label="Приглашение Ромы и Валерии" aria-hidden="true" inert>
     <img class="invitation-photo first-photo" src="Foto1.PNG" width="1080" height="1920" alt="Свадебное приглашение Ромы и Валерии: фотографии пары, 31 октября 2026 года." decoding="async" fetchpriority="high" tabindex="-1">
     <img class="invitation-photo second-photo" src="Foto2.PNG" width="1080" height="1920" alt="Дорогие гости! Приглашаем вас на свадьбу 31 октября 2026 года. Место проведения: Weserstraße 170, Bremerhaven 27572." decoding="async" loading="lazy">
+    <section class="map-section" aria-label="Место проведения и дресс-код">
+      <img class="invitation-photo third-photo" src="Foto3.jpeg" width="864" height="1536" alt="Сервировка свадебного стола. Дресс-код: чёрный, шоколадный, зелёный и кремовый цвета." decoding="async" loading="lazy">
+      <a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Weserstra%C3%9Fe%20170%2C%2027572%20Bremerhaven%2C%20Germany" target="_blank" rel="noopener noreferrer">Открыть в Гугл мапс</a>
+    </section>
   </main>
   <p class="sr-only" role="status" aria-live="polite"></p>
   <noscript><style>.intro { display: none; } .invitation { opacity: 1; filter: none; transform: none; }</style></noscript>
