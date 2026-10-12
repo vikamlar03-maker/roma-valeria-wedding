@@ -118,6 +118,20 @@
       font-size: clamp(32px, 10cqw, 100px); line-height: 1.2;
     }
     .rsvp-error { margin: 0; color: #7b3024; font: clamp(12px, 2.5cqw, 24px)/1.2 Georgia, serif; }
+    /* Polaroid gallery follows the supplied portrait mockup. */
+    .gallery-section { position: relative; width: 100%; aspect-ratio: 9 / 16; container-type: inline-size; overflow: hidden; }
+    .gallery-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .polaroid { position: absolute; left: 10.5%; top: 17%; width: 77%; margin: 0; padding: 1.2cqw; background: #f7f6ef; box-shadow: 0 .4cqw 1.4cqw #24180c33; }
+    .gallery-photo { display: block; width: 100%; aspect-ratio: 7 / 8; object-fit: cover; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+    .gallery-caption { height: 26cqw; padding: 2.5cqw 1.2cqw 2cqw; display: flex; flex-direction: column; justify-content: center; gap: .45em; color: #24221e; text-align: center; font: 3.2cqw/1.32 Georgia, serif; letter-spacing: .025em; overflow-wrap: break-word; }
+    .gallery-verse, .gallery-reference { margin: 0; }
+    .gallery-reference { font-style: normal; }
+    .gallery-arrow { position: absolute; top: 44%; width: 12.5%; aspect-ratio: 1; min-width: 44px; min-height: 44px; padding: 1.6cqw; border: .45cqw solid #17130f; border-radius: 50%; background: transparent; color: #17130f; cursor: pointer; }
+    .gallery-prev { left: .4%; }
+    .gallery-next { right: 1.8%; }
+    .gallery-arrow svg { width: 100%; height: 100%; display: block; }
+    .gallery-arrow:focus-visible { outline: 2px solid #fff7ec; outline-offset: 4px; }
+    .gallery-arrow:hover { background: #f7f6ef33; }
     body[data-state="opening"] .intro { opacity: 0; filter: blur(22px); transform: scale(1.035); pointer-events: none; }
     body[data-state="opening"] .invitation, body[data-state="opened"] .invitation {
       opacity: 1; filter: blur(0); transform: scale(1);
@@ -170,6 +184,23 @@
         <p class="rsvp-thanks" role="status" tabindex="-1" hidden>Благодарю!</p>
       </div>
     </section>
+    <section class="gallery-section" aria-label="Галерея Ромы и Валерии" aria-roledescription="карусель" hidden>
+      <img class="gallery-background" src="Fon.JPG" alt="" loading="lazy">
+      <figure class="polaroid">
+        <img class="gallery-photo" alt="" draggable="false">
+        <figcaption class="gallery-caption">
+          <p class="gallery-verse"></p>
+          <cite class="gallery-reference"></cite>
+        </figcaption>
+      </figure>
+      <button class="gallery-arrow gallery-prev" type="button" aria-label="Предыдущее фото">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M33 20H7m13-13L7 20l13 13"/></svg>
+      </button>
+      <button class="gallery-arrow gallery-next" type="button" aria-label="Следующее фото">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 20h26M20 7l13 13-13 13"/></svg>
+      </button>
+      <p class="gallery-status sr-only" role="status" aria-live="polite"></p>
+    </section>
   </main>
   <p id="intro-status" class="sr-only" role="status" aria-live="polite"></p>
   <noscript><style>.intro { display: none; } .invitation { opacity: 1; filter: none; transform: none; }</style></noscript>
@@ -187,6 +218,56 @@
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
       let opening = false;
       let playAttempt = 0;
+
+      // Original GitHub filenames, including the space in Galeere .JPG.
+      // The section stays hidden until all four image files load successfully.
+      const gallerySlides = [
+        { src: 'Galeere.JPG', verse: '«И дам им одно сердце и один путь…»', reference: 'Иеремия 32:39' },
+        { src: 'Galeere .JPG', verse: '«Пленила ты сердце мое, сестра моя, невеста! пленила ты сердце мое одним взглядом очей твоих…»', reference: 'Песнь песней 4:9' },
+        { src: 'Galeere1.JPG', verse: '«…нашла того, которого любит душа моя, ухватилась за него, и не отпустила его…»', reference: 'Песнь песней 3:4' },
+        { src: 'Galeere2.JPG', verse: '«Так что они уже не двое, но одна плоть. Итак, что Бог сочетал, того человек да не разлучает».', reference: 'Матфея 19:6' }
+      ];
+      const gallery = document.querySelector('.gallery-section');
+      const galleryPhoto = gallery.querySelector('.gallery-photo');
+      let galleryIndex = 0;
+      function showGalleryPhoto(index) {
+        galleryIndex = (index + gallerySlides.length) % gallerySlides.length;
+        const slide = gallerySlides[galleryIndex];
+        galleryPhoto.src = slide.src;
+        galleryPhoto.alt = `Рома и Валерия — фото ${galleryIndex + 1} из 4`;
+        gallery.querySelector('.gallery-verse').textContent = slide.verse;
+        gallery.querySelector('.gallery-reference').textContent = slide.reference;
+        gallery.querySelector('.gallery-status').textContent = `Фото ${galleryIndex + 1} из 4`;
+      }
+      gallery.querySelector('.gallery-prev').addEventListener('click', () => showGalleryPhoto(galleryIndex - 1));
+      gallery.querySelector('.gallery-next').addEventListener('click', () => showGalleryPhoto(galleryIndex + 1));
+      gallery.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        showGalleryPhoto(galleryIndex + (event.key === 'ArrowRight' ? 1 : -1));
+      });
+      let swipeStart = null;
+      galleryPhoto.addEventListener('pointerdown', event => {
+        if (event.button !== 0) return;
+        swipeStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+        galleryPhoto.setPointerCapture(event.pointerId);
+      });
+      galleryPhoto.addEventListener('pointercancel', () => { swipeStart = null; });
+      galleryPhoto.addEventListener('pointerup', event => {
+        if (!swipeStart || swipeStart.id !== event.pointerId) return;
+        const dx = event.clientX - swipeStart.x, dy = event.clientY - swipeStart.y;
+        swipeStart = null;
+        if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy) * 1.4) showGalleryPhoto(galleryIndex + (dx < 0 ? 1 : -1));
+      });
+      Promise.all(gallerySlides.map(slide => new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => image.naturalWidth ? resolve() : reject();
+        image.onerror = reject;
+        image.src = slide.src;
+      }))).then(() => {
+        showGalleryPhoto(0);
+        gallery.hidden = false;
+      }).catch(() => { /* Keep the gallery hidden while original photos are missing or empty. */ });
 
       // GOOGLE SHEETS CONNECTION — return here when the table is ready.
       // Paste the published Google Apps Script Web App URL (/exec) below.
