@@ -40,7 +40,11 @@
       position: relative; width: min(100vw, 56.25svh); aspect-ratio: 9 / 16;
       overflow: hidden; container-type: inline-size;
     }
-    .film, .last-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .film, .intro-poster, .last-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .intro-poster { opacity: 1; pointer-events: none; transition: opacity 350ms ease; }
+    .film { opacity: 0; transition: opacity 350ms ease; }
+    .stage[data-playing="true"] .film { opacity: 1; }
+    .stage[data-playing="true"] .intro-poster { opacity: 0; }
     .last-frame { opacity: 0; pointer-events: none; }
     .stage[data-ready="true"] .last-frame { opacity: 1; }
     .open-invitation {
@@ -60,11 +64,16 @@
     .open-invitation:hover { background: rgba(250, 244, 229, .62); }
     .open-invitation:focus-visible { outline: 2px solid #382016; outline-offset: 4px; }
     .open-invitation:disabled { cursor: wait; }
-    .play-video {
-      position: absolute; z-index: 1; left: 50%; bottom: 9%; transform: translateX(-50%);
-      min-height: 44px; padding: .8em 1.4em; border: 1px solid #eadcc8; border-radius: 2px;
-      color: #f6eddf; background: rgba(45, 22, 13, .75); font: 16px Georgia, serif; cursor: pointer;
+    .intro-loader {
+      position: absolute; z-index: 2; left: 50%; bottom: 7%; width: 5.5cqw; aspect-ratio: 1;
+      border: 1px solid rgba(246, 237, 223, .38); border-top-color: #f6eddf;
+      border-radius: 50%; opacity: .9; transform: translateX(-50%);
+      animation: intro-loading 900ms linear infinite; pointer-events: none;
+      transition: opacity 250ms ease;
     }
+    .stage[data-playing="true"] .intro-loader,
+    .stage[data-ready="true"] .intro-loader { opacity: 0; }
+    @keyframes intro-loading { to { transform: translateX(-50%) rotate(360deg); } }
     .notice {
       position: absolute; z-index: 1; top: 67%; left: 18.5%; width: 58%; margin: 0;
       color: #382016; text-align: center; font: 14px/1.4 Georgia, serif;
@@ -139,7 +148,7 @@
     .gallery-arrow svg { width: 100%; height: 100%; display: block; }
     .gallery-arrow:focus-visible { outline: 2px solid #fff7ec; outline-offset: 4px; }
     .gallery-arrow:hover { background: #f7f6ef33; }
-    .countdown-section { width: 100%; padding: 4.5cqw 0 0; background: #fff; container-type: inline-size; }
+    .countdown-section { width: 100%; padding: 0; background: #fff; container-type: inline-size; }
     .countdown-photo-panel { position: relative; isolation: isolate; width: min(100%, 69svh); margin-inline: auto; container-type: inline-size; aspect-ratio: 3 / 4; overflow: hidden; color: #fff9ed; background: #39261c url("Fon.JPG") center / cover; }
     .countdown-photo { position: absolute; z-index: -2; top: 25%; left: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; mask-image: linear-gradient(to bottom, transparent, #000 22%); }
     .countdown-photo-panel::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(180deg, #35231959, transparent 55%, #26160c26); pointer-events: none; }
@@ -163,6 +172,8 @@
     .group-heading { margin: 0; font: italic 500 10.5cqw/1.15 Invitation, Georgia, serif; }
     .group-cta { min-height: 44px; display: inline-flex; align-items: center; padding: 1.5cqw 1cqw; font: 5cqw/1.3 GalleryCaption, Georgia, serif; text-decoration: none; }
     .group-link:focus-visible { outline: 2px solid #211b17; outline-offset: 8px; border-radius: 2px; }
+    .creator-section { width: 100%; padding: 2cqw 4cqw 10cqw; background: #fff; container-type: inline-size; }
+    .creator-card { display: block; width: min(92%, 920px); height: auto; margin: 0 auto; }
     body[data-state="opening"] .intro { opacity: 0; filter: blur(22px); transform: scale(1.035); pointer-events: none; }
     body[data-state="opening"] .invitation, body[data-state="opened"] .invitation {
       opacity: 1; filter: blur(0); transform: scale(1);
@@ -171,21 +182,23 @@
     @media (prefers-reduced-motion: reduce) {
       .intro, .invitation { transition-duration: 180ms; }
       .open-invitation { transition-duration: 180ms; }
+      .intro-loader { animation: none; }
     }
   </style>
 </head>
 <body data-state="playing">
   <section class="intro" aria-label="Видео-приглашение">
-    <div class="stage" data-ready="false">
+    <div class="stage" data-ready="false" data-playing="false">
+      <img class="intro-poster" src="start-poster.jpg" alt="" aria-hidden="true" fetchpriority="high">
       <video class="film" autoplay muted playsinline webkit-playsinline preload="auto" poster="start-poster.jpg" aria-label="Открывающийся свадебный конверт">
         <source src="start.mp4" type="video/mp4">
         <source src="Start.MOV" type="video/quicktime">
       </video>
       <img class="last-frame" src="start-end.jpg" alt="" aria-hidden="true" decoding="async">
+      <span class="intro-loader" role="status" aria-label="Видео загружается"></span>
       <button class="open-invitation" type="button" aria-label="Открыть пригласительное" disabled>
         <span>Открыть</span><span>пригласительное</span>
       </button>
-      <button class="play-video" type="button" hidden>Запустить видео</button>
       <p class="notice" role="alert" hidden></p>
     </div>
   </section>
@@ -255,6 +268,9 @@
         <span class="group-cta">Перейти в общую группу</span>
       </a>
     </section>
+    <section class="creator-section" aria-label="Автор приглашения">
+      <img class="creator-card" src="photographer-card.webp" width="1200" height="800" alt="Фотограф Viktoriia Dezhniuk. Телефон: +49 155 62695270. Instagram: viktoriia_foto07." loading="lazy" decoding="async">
+    </section>
   </main>
   <p id="intro-status" class="sr-only" role="status" aria-live="polite"></p>
   <noscript><style>.intro { display: none; } .invitation { opacity: 1; filter: none; transform: none; }</style></noscript>
@@ -266,12 +282,12 @@
       const invitation = document.querySelector('.invitation');
       const photo = document.querySelector('.first-photo');
       const openButton = document.querySelector('.open-invitation');
-      const playButton = document.querySelector('.play-video');
       const notice = document.querySelector('.notice');
       const status = document.querySelector('#intro-status');
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
       let opening = false;
-      let playAttempt = 0;
+      let videoRetryTimer = 0;
+      let videoRetryDelay = 1200;
 
       // Original GitHub filenames, including the space in Galeere .JPG.
       // The section stays hidden until all four image files load successfully.
@@ -426,24 +442,41 @@
         stage.dataset.ready = 'true';
         document.body.dataset.state = 'ready';
         openButton.disabled = false;
-        playButton.hidden = true;
+        clearTimeout(videoRetryTimer);
         status.textContent = 'Видео завершено. Можно открыть пригласительное.';
       }
 
+      function scheduleVideoRetry() {
+        if (opening || stage.dataset.ready === 'true' || document.body.dataset.state === 'opened') return;
+        clearTimeout(videoRetryTimer);
+        videoRetryTimer = setTimeout(() => {
+          if (document.hidden) return;
+          video.load();
+          startVideo();
+        }, videoRetryDelay);
+        videoRetryDelay = Math.min(Math.round(videoRetryDelay * 1.5), 8000);
+        status.textContent = 'Видео загружается.';
+      }
+
       async function startVideo() {
-        const attempt = ++playAttempt;
+        if (opening || stage.dataset.ready === 'true' || document.body.dataset.state === 'opened') return;
         video.muted = true;
         try {
           await video.play();
-          if (attempt === playAttempt) playButton.hidden = true;
         } catch {
-          if (stage.dataset.ready !== 'true' && attempt === playAttempt) playButton.hidden = false;
+          scheduleVideoRetry();
         }
       }
 
       video.addEventListener('ended', showInvitationButton, { once: true });
-      video.addEventListener('error', showInvitationButton, { once: true });
-      playButton.addEventListener('click', startVideo);
+      video.addEventListener('playing', () => {
+        stage.dataset.playing = 'true';
+        videoRetryDelay = 1200;
+        clearTimeout(videoRetryTimer);
+        status.textContent = 'Видео воспроизводится.';
+      });
+      video.addEventListener('canplay', startVideo);
+      video.addEventListener('error', scheduleVideoRetry);
       // A phone returning from the background must not lose the introduction.
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden && document.body.dataset.state === 'playing' && video.paused) startVideo();
