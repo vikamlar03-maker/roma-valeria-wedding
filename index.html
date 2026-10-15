@@ -376,12 +376,13 @@
         }
       }
 
-      // GOOGLE SHEETS CONNECTION — return here when the table is ready.
-      // Paste the published Google Apps Script Web App URL (/exec) below.
-      // The script should accept POST JSON in a text/plain body and return { success: true }.
-      // Until this is connected, this is a preview: answers stay in this browser only
-      // and are NOT delivered to the wedding organizers or a Google spreadsheet.
-      const GOOGLE_SHEETS_WEB_APP_URL = '';
+      // GOOGLE FORM CONNECTION — Google writes every response to the linked spreadsheet.
+      const GOOGLE_FORM_ENDPOINT =
+        'https://docs.google.com/forms/d/e/1FAIpQLSedwNQsiH5NZApEJ1unbraJqYHa24Ra9iiEiuSD8f7SLYaRuA/formResponse';
+      const GOOGLE_FORM_FIELDS = {
+        name: ['entry.8192327', 'entry.384249846'],
+        guestCount: 'entry.245995596'
+      };
 
       const guestForm = document.querySelector('.rsvp-form');
       const guestName = document.querySelector('#guest-name');
@@ -395,28 +396,20 @@
         if (sendButton.disabled) return;
         guestName.setCustomValidity(guestName.value.trim() ? '' : 'Пожалуйста, укажите ваше имя.');
         if (!guestForm.reportValidity()) return;
-        const answer = {
-          name: guestName.value.trim(),
-          guestCount: Number(guestCount.value),
-          submittedAt: new Date().toISOString()
-        };
+        const name = guestName.value.trim();
+        const count = String(Number(guestCount.value));
+        const payload = new URLSearchParams();
+        GOOGLE_FORM_FIELDS.name.forEach(field => payload.set(field, name));
+        payload.set(GOOGLE_FORM_FIELDS.guestCount, count);
         sendButton.disabled = true;
         guestForm.setAttribute('aria-busy', 'true');
         formError.hidden = true;
         try {
-          if (GOOGLE_SHEETS_WEB_APP_URL) {
-            const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-              body: JSON.stringify(answer)
-            });
-            if (!response.ok) throw new Error('RSVP delivery failed');
-            const result = await response.json();
-            if (result.success !== true) throw new Error('RSVP not acknowledged');
-          } else {
-            try { localStorage.setItem('roma-valeria-rsvp-preview', JSON.stringify(answer)); }
-            catch { /* The preview also works if the browser blocks local storage. */ }
-          }
+          await fetch(GOOGLE_FORM_ENDPOINT, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: payload
+          });
           guestForm.hidden = true;
           formThanks.hidden = false;
           formThanks.focus({ preventScroll: true });
