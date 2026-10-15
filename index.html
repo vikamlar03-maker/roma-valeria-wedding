@@ -139,7 +139,7 @@
     .gallery-arrow svg { width: 100%; height: 100%; display: block; }
     .gallery-arrow:focus-visible { outline: 2px solid #fff7ec; outline-offset: 4px; }
     .gallery-arrow:hover { background: #f7f6ef33; }
-    .countdown-section { width: 100%; padding: 4.5cqw 0 28cqw; background: #fff; container-type: inline-size; }
+    .countdown-section { width: 100%; padding: 4.5cqw 0 8cqw; background: #fff; container-type: inline-size; }
     .countdown-photo-panel { position: relative; isolation: isolate; width: min(100%, 69svh); margin-inline: auto; container-type: inline-size; aspect-ratio: 3 / 4; overflow: hidden; color: #fff9ed; background: #39261c url("Fon.JPG") center / cover; }
     .countdown-photo { position: absolute; z-index: -2; top: 25%; left: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; mask-image: linear-gradient(to bottom, transparent, #000 22%); }
     .countdown-photo-panel::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(180deg, #35231959, transparent 55%, #26160c26); pointer-events: none; }
@@ -158,6 +158,13 @@
     .countdown-heart { display: block; margin: 0 auto 1cqw; width: 5.7cqw; height: 5.7cqw; fill: none; stroke: currentColor; stroke-width: 1.2; }
     .countdown-dedication span { display: block; font: 3.8cqw/1.4 GalleryCaption, Georgia, serif; letter-spacing: .17em; }
     .countdown-birds { position: absolute; right: 3.8%; bottom: 3.8%; width: 35%; height: auto; pointer-events: none; filter: drop-shadow(0 1px 1px #29150526); }
+    .group-section { position: relative; width: 100%; padding: 14cqw 5cqw 16cqw; text-align: center; color: #fff8e9; background: #493024 url("Fon.JPG") center 58% / cover; container-type: inline-size; }
+    .group-section::before { content: ""; position: absolute; inset: 0; background: #2d1a101f; pointer-events: none; }
+    .group-link { position: relative; display: inline-flex; flex-direction: column; align-items: center; gap: 3cqw; max-width: 100%; color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+    .group-heading { margin: 0; font: italic 500 10cqw/1.15 Invitation, Georgia, serif; text-shadow: 0 1px 6px #29150966; }
+    .group-cta { min-height: 44px; display: inline-flex; align-items: center; padding: 1.5cqw 1cqw; border-bottom: 1px solid #f5e5c4b3; font: 4cqw/1.3 GalleryCaption, Georgia, serif; }
+    .group-link:hover .group-cta { border-bottom-color: #fff8e9; }
+    .group-link:focus-visible { outline: 2px solid #fff8e9; outline-offset: 8px; border-radius: 2px; }
     body[data-state="opening"] .intro { opacity: 0; filter: blur(22px); transform: scale(1.035); pointer-events: none; }
     body[data-state="opening"] .invitation, body[data-state="opened"] .invitation {
       opacity: 1; filter: blur(0); transform: scale(1);
@@ -243,6 +250,12 @@
         </p>
         <img class="countdown-birds" src="golden-swallows.png" alt="" loading="lazy">
       </div>
+    </section>
+    <section class="group-section" aria-label="Общая группа в Telegram">
+      <a class="group-link" href="https://t.me/+87FGDWeXiblmOGFi" target="_blank" rel="noopener noreferrer">
+        <h2 class="group-heading">Общая группа</h2>
+        <span class="group-cta">Перейти в общую группу ↗</span>
+      </a>
     </section>
   </main>
   <p id="intro-status" class="sr-only" role="status" aria-live="polite"></p>
