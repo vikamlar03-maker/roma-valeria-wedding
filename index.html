@@ -139,6 +139,25 @@
     .gallery-arrow svg { width: 100%; height: 100%; display: block; }
     .gallery-arrow:focus-visible { outline: 2px solid #fff7ec; outline-offset: 4px; }
     .gallery-arrow:hover { background: #f7f6ef33; }
+    .countdown-section { width: 100%; padding: 4.5cqw 0 28cqw; background: #fff; container-type: inline-size; }
+    .countdown-photo-panel { position: relative; isolation: isolate; width: min(100%, 69svh); margin-inline: auto; container-type: inline-size; aspect-ratio: 3 / 4; overflow: hidden; color: #fff9ed; background: #39261c url("Fon.JPG") center / cover; }
+    .countdown-photo { position: absolute; z-index: -2; top: 25%; left: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; mask-image: linear-gradient(to bottom, transparent, #000 22%); }
+    .countdown-photo-panel::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(180deg, #35231959, transparent 55%, #26160c26); pointer-events: none; }
+    .countdown-photo-panel::after { content: ""; position: absolute; inset: 3.1%; border: 1px solid #f5e6cdcf; pointer-events: none; }
+    .countdown-heading { position: absolute; inset: 6% 5% auto; margin: 0; text-align: center; font-family: Invitation, Georgia, serif; font-style: italic; font-weight: 500; font-size: 10.4cqw; line-height: 1.15; text-shadow: 0 1px 5px #24160b66; }
+    .countdown-clock { position: absolute; top: 20%; left: 8%; width: 84%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5cqw; text-align: center; }
+    .countdown-unit { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+    .countdown-dial { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; border: 1px solid #f9efdb; border-radius: 50%; background: #e7d5af18; box-shadow: 0 0 0 1px #25180b0d; }
+    .countdown-ticks { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #fff4db; stroke-width: .65; }
+    .countdown-ticks .major { stroke-width: 1; }
+    .countdown-ticks .hand { stroke: #d8ad68; stroke-width: 1.1; stroke-linecap: round; transform-origin: 50px 50px; }
+    .countdown-ticks .hand-dot { stroke: #f4dcac; fill: #a7773e; stroke-width: .8; }
+    .countdown-number { position: relative; margin-top: 1.1cqw; font: 5.5cqw/1 GalleryCaption, Georgia, serif; font-variant-numeric: tabular-nums; text-shadow: 0 1px 5px #21110877; }
+    .countdown-label { margin-top: 2cqw; font: 3cqw/1.2 GalleryCaption, Georgia, serif; }
+    .countdown-dedication { position: absolute; top: 39%; left: 12%; width: 76%; margin: 0; text-align: center; text-shadow: 0 1px 7px #211108aa; }
+    .countdown-heart { display: block; margin: 0 auto 3cqw; width: 5.7cqw; height: 5.7cqw; fill: none; stroke: currentColor; stroke-width: 1.2; }
+    .countdown-dedication span { display: block; font: 4.1cqw/1.55 GalleryCaption, Georgia, serif; letter-spacing: .17em; }
+    .countdown-birds { position: absolute; right: -3%; bottom: 2%; width: 43%; height: auto; pointer-events: none; filter: drop-shadow(0 1px 1px #29150526); }
     body[data-state="opening"] .intro { opacity: 0; filter: blur(22px); transform: scale(1.035); pointer-events: none; }
     body[data-state="opening"] .invitation, body[data-state="opened"] .invitation {
       opacity: 1; filter: blur(0); transform: scale(1);
@@ -208,6 +227,23 @@
       </button>
       <p class="gallery-status sr-only" role="status" aria-live="polite"></p>
     </section>
+    <section class="countdown-section" aria-label="До нашего дня осталось" hidden>
+      <div class="countdown-photo-panel">
+        <img class="countdown-photo" src="timer-photo.jpg" alt="Рома и Валерия смотрят друг на друга в саду." loading="lazy">
+        <h2 class="countdown-heading">Увидимся через…</h2>
+        <div class="countdown-clock" role="timer" aria-live="off" aria-label="Обратный отсчёт до свадьбы">
+          <div class="countdown-unit"><div class="countdown-dial"><svg class="countdown-ticks" viewBox="0 0 100 100" aria-hidden="true" data-dial="days"></svg><span class="countdown-number" data-countdown="days">00</span></div><span class="countdown-label">дней</span></div>
+          <div class="countdown-unit"><div class="countdown-dial"><svg class="countdown-ticks" viewBox="0 0 100 100" aria-hidden="true" data-dial="hours"></svg><span class="countdown-number" data-countdown="hours">00</span></div><span class="countdown-label">часов</span></div>
+          <div class="countdown-unit"><div class="countdown-dial"><svg class="countdown-ticks" viewBox="0 0 100 100" aria-hidden="true" data-dial="minutes"></svg><span class="countdown-number" data-countdown="minutes">00</span></div><span class="countdown-label">минут</span></div>
+          <div class="countdown-unit"><div class="countdown-dial"><svg class="countdown-ticks" viewBox="0 0 100 100" aria-hidden="true" data-dial="seconds"></svg><span class="countdown-number" data-countdown="seconds">00</span></div><span class="countdown-label">секунд</span></div>
+        </div>
+        <p class="countdown-dedication">
+          <svg class="countdown-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S2 14.4 2 7.8C2 1.7 9 .8 12 6c3-5.2 10-4.3 10 1.8C22 14.4 12 21 12 21Z"/></svg>
+          <span>ДО НАШЕГО</span><span>СЧАСТЛИВОГО ДНЯ</span>
+        </p>
+        <img class="countdown-birds" src="golden-swallows.png" alt="" loading="lazy">
+      </div>
+    </section>
   </main>
   <p id="intro-status" class="sr-only" role="status" aria-live="polite"></p>
   <noscript><style>.intro { display: none; } .invitation { opacity: 1; filter: none; transform: none; }</style></noscript>
@@ -275,6 +311,57 @@
         showGalleryPhoto(0);
         gallery.hidden = false;
       }).catch(() => { /* Keep the gallery hidden while original photos are missing or empty. */ });
+
+      // Wedding starts at 11:00 in Bremerhaven; October 31 is CET (UTC+01:00).
+      const WEDDING_COUNTDOWN_DATE = "2026-10-31T11:00:00+01:00";
+      const countdownSection = document.querySelector('.countdown-section');
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const countdownHands = {};
+      countdownSection.querySelectorAll('[data-dial]').forEach(dial => {
+        for (let tick = 0; tick < 60; tick++) {
+          const angle = tick * Math.PI / 30;
+          const major = tick % 5 === 0;
+          const line = document.createElementNS(svgNS, 'line');
+          const inner = major ? 39 : 42;
+          line.setAttribute('x1', String(50 + Math.sin(angle) * inner));
+          line.setAttribute('y1', String(50 - Math.cos(angle) * inner));
+          line.setAttribute('x2', String(50 + Math.sin(angle) * 45));
+          line.setAttribute('y2', String(50 - Math.cos(angle) * 45));
+          if (major) line.setAttribute('class', 'major');
+          dial.append(line);
+        }
+        const hand = document.createElementNS(svgNS, 'g');
+        hand.setAttribute('class', 'hand');
+        const line = document.createElementNS(svgNS, 'path');
+        line.setAttribute('d', 'M50 13V23');
+        const dot = document.createElementNS(svgNS, 'circle');
+        dot.setAttribute('cx', '50'); dot.setAttribute('cy', '13'); dot.setAttribute('r', '2');
+        dot.setAttribute('class', 'hand-dot');
+        hand.append(line, dot); dial.append(hand);
+        countdownHands[dial.dataset.dial] = hand;
+      });
+      if (WEDDING_COUNTDOWN_DATE) {
+        const target = Date.parse(WEDDING_COUNTDOWN_DATE);
+        if (Number.isFinite(target)) {
+          countdownSection.hidden = false;
+          const updateCountdown = () => {
+            const remaining = Math.max(0, Math.floor((target - Date.now()) / 1000));
+            const values = {
+              days: Math.floor(remaining / 86400),
+              hours: Math.floor(remaining / 3600) % 24,
+              minutes: Math.floor(remaining / 60) % 60,
+              seconds: remaining % 60
+            };
+            for (const [unit, value] of Object.entries(values)) {
+              countdownSection.querySelector(`[data-countdown="${unit}"]`).textContent = String(value).padStart(2, '0');
+              if (countdownHands[unit]) countdownHands[unit].setAttribute('transform', `rotate(${value / (unit === 'hours' ? 24 : unit === 'days' ? 31 : 60) * 360} 50 50)`);
+            }
+          };
+          updateCountdown();
+          setInterval(updateCountdown, 1000);
+          document.addEventListener('visibilitychange', () => { if (!document.hidden) updateCountdown(); });
+        }
+      }
 
       // GOOGLE SHEETS CONNECTION — return here when the table is ready.
       // Paste the published Google Apps Script Web App URL (/exec) below.
